@@ -11,6 +11,5 @@ func main() {
 	a.Set("qwerty", "AnSergeyAleksandrovich", time.Second*5)
 	time.Sleep(time.Second * 6)
 	fmt.Println(a.Get("qwerty"))
-	a.Delete("qwerty")
 
 }

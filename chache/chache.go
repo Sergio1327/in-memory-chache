@@ -6,9 +6,8 @@ import (
 	"time"
 )
 
-var mutex sync.RWMutex
-
 type Chache struct {
+	mu     sync.Mutex
 	chache map[string]interface{}
 }
 
@@ -17,9 +16,9 @@ func New() *Chache {
 }
 
 func (c Chache) Set(key string, value interface{}, t time.Duration) error {
-	mutex.Lock()
+	c.mu.Lock()
 	c.chache[key] = value
-	mutex.Unlock()
+	c.mu.Unlock()
 	go func() {
 		time.Sleep(t)
 		c.Delete(key)
@@ -28,8 +27,8 @@ func (c Chache) Set(key string, value interface{}, t time.Duration) error {
 }
 
 func (c Chache) Get(key string) interface{} {
-	mutex.RLock()
-	defer mutex.RUnlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	_, ok := c.chache[key]
 	if !ok {
 		return errors.New("kэш с таким ключом не найден")
@@ -38,8 +37,8 @@ func (c Chache) Get(key string) interface{} {
 }
 
 func (c Chache) Delete(key string) error {
-	mutex.Lock()
-	defer mutex.Unlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	_, ok := c.chache[key]
 	if !ok {
 		return errors.New("kэш с таким ключом не найден")

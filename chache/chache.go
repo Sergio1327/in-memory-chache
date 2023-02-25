@@ -15,7 +15,7 @@ func New() *Chache {
 	return &Chache{chache: make(map[string]interface{})}
 }
 
-func (c Chache) Set(key string, value interface{}, t time.Duration) error {
+func (c *Chache) Set(key string, value interface{}, t time.Duration) error {
 	c.mu.Lock()
 	c.chache[key] = value
 	c.mu.Unlock()
@@ -26,7 +26,7 @@ func (c Chache) Set(key string, value interface{}, t time.Duration) error {
 	return nil
 }
 
-func (c Chache) Get(key string) interface{} {
+func (c *Chache) Get(key string) interface{} {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	_, ok := c.chache[key]
@@ -36,7 +36,7 @@ func (c Chache) Get(key string) interface{} {
 	return c.chache[key]
 }
 
-func (c Chache) Delete(key string) error {
+func (c *Chache) Delete(key string) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	_, ok := c.chache[key]
